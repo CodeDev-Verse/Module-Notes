@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Execution</title>
+    <script>
+        console.log("Hello from the head script!");
+    </script>
+    <script defer src="./sample.js"></script>
+</head>
+<body>
+    <h1>JavaScript Execution Flow</h1>
+    <script>
+        console.log("Hello from the body script!");
+    </script>
+</body>
+</html>
+
+<!-- 
+
+    Step 1: Creating an HTML File with JavaScript
+    Step 2: Browser Loads the HTML File
+    Step 3: Parsing the HTML (DOM Construction)
+    Step 4: JavaScript Execution Flow
+        1. inline script (<script>...</script>)
+        2. If it's an external script (<script src="script.js"></script>)
+    Step 5: Rendering the Page
+        DOM
+        CSSOM
+        
+
+ -->
+
+ <!-- 
+    diff b/w console p execution and html k through exe
+    Execution Trigger
+
+    Final Summary: How They Differ
+Feature	Console Execution	HTML File Execution
+Execution Trigger	Manual input	Runs when the page loads
+Parsing Behavior	No parsing needed	Runs during HTML parsing
+DOM Availability	Always available	Depends on script placement
+Blocking Behavior	No blocking	Blocks parsing (unless async/defer is used)
+Scope	Limited to session	Full page context
+
+ -->
+

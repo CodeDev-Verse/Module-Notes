@@ -1325,3 +1325,464 @@ nohup python3 long_script.py &
 - Output is redirected to `nohup.out` by default.  
 
 ---
+---
+---
+
+# **CLI Bootcamp - Disk Usage & Storage Management**  
+
+---
+
+# **3.1 Disk Usage & Storage**  
+
+## **1. Checking Disk Space (`df -h`)**  
+
+The `df` (Disk Filesystem) command helps us check the **total, used, and available disk space** on our system.
+
+### **1.1 Basic Disk Space Usage**  
+```sh
+df -h
+```
+- `-h` → Human-readable format (sizes in MB, GB).  
+
+#### **Example Output:**  
+```
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       100G   40G   60G  40% /
+tmpfs           3.9G  1.2M  3.9G   1% /dev/shm
+/dev/sdb1       500G  450G   50G  90% /mnt/storage
+```
+- **Size** → Total disk size.  
+- **Used** → Space already used.  
+- **Avail** → Free space available.  
+- **Use%** → Percentage of disk space used.  
+- **Mounted on** → The directory where the disk is attached.  
+
+---
+
+### **1.2 Checking Specific Filesystem Usage**  
+To check space usage for a specific partition:  
+```sh
+df -h /home
+```
+- Shows disk usage **only for `/home`**.  
+
+---
+
+### **1.3 Checking Inodes Usage**  
+Inodes store metadata about files. If you run out of inodes, you **cannot create new files**, even if disk space is available.  
+```sh
+df -i
+```
+- Shows **used and available inodes** on all mounted filesystems.  
+
+---
+
+## **2. Checking Directory & File Sizes (`du -sh *`)**  
+
+The `du` (Disk Usage) command helps find the space occupied by **directories and files**.
+
+### **2.1 Checking the Size of a Directory**  
+```sh
+du -sh /home/user
+```
+- `-s` → Summary (shows only total size).  
+- `-h` → Human-readable format (MB, GB).  
+
+#### **Example Output:**  
+```
+5.2G    /home/user
+```
+- `/home/user` is consuming **5.2GB** of storage.  
+
+---
+
+### **2.2 Checking the Size of All Files & Subdirectories**  
+```sh
+du -sh *
+```
+#### **Example Output:**  
+```
+300M    Documents
+1.2G    Downloads
+500M    Pictures
+4.8G    Videos
+```
+- Shows the size of each **subdirectory** and **file** in the current directory.  
+
+---
+
+### **2.3 Sorting Directories by Size**  
+To find the **largest directories**:  
+```sh
+du -ah /home/user | sort -rh | head -10
+```
+- `-a` → Shows sizes of **both files and directories**.  
+- `sort -rh` → Sorts in **descending** order (largest first).  
+- `head -10` → Displays the **top 10 largest directories/files**.  
+
+---
+
+## **3. Finding Large Files (`find / -size +100M`) (15 mins)**  
+
+If disk space is low, **locating large files** helps identify what can be deleted or archived.
+
+### **3.1 Finding Files Larger Than 100MB**  
+```sh
+find / -type f -size +100M
+```
+- `/` → Start searching from the **root** directory.  
+- `-type f` → Find **only files** (not directories).  
+- `-size +100M` → Look for files **larger than 100MB**.  
+
+---
+
+### **3.2 Finding Large Files in a Specific Directory**  
+To search in `/var/log/` for files over **500MB**:  
+```sh
+find /var/log/ -type f -size +500M
+```
+
+---
+
+### **3.3 Deleting Large Files (Use with Caution!)**  
+Once you identify large files, remove them if **not needed**:  
+```sh
+rm /path/to/large-file.log
+```
+
+To **automatically delete** files over 1GB in `/tmp`:  
+```sh
+find /tmp -type f -size +1G -delete
+```
+⚠️ **Warning:** Double-check before using `-delete`!  
+
+---
+
+### **3.4 Finding Large Files and Sorting by Size**  
+To find **the top 10 largest files**:  
+```sh
+find /home -type f -exec du -h {} + | sort -rh | head -10
+```
+- `-exec du -h {}` → Get file size.  
+- `sort -rh` → Sort by size (largest first).  
+- `head -10` → Show **top 10** files.  
+
+---
+
+# **CLI Bootcamp - Network Commands**  
+
+## **Introduction (2-3 mins)**  
+
+**Speaker:**  
+*"In this section, we’ll explore essential CLI commands for networking. You’ll learn how to check network connectivity, download files using CLI tools, inspect open ports, and retrieve network interface details. These commands are crucial for troubleshooting network issues and managing system connectivity."*  
+
+---
+---
+---
+
+# **3.2 Network Commands**  
+
+## **1. Checking Network Connectivity (`ping`)**  
+
+### **1.1 Basic `ping` Command**  
+`ping` tests network connectivity by sending ICMP echo requests to a remote server.  
+
+```sh
+ping google.com
+```
+- Sends continuous **packets** to check if `google.com` is reachable.  
+- If the website is **online**, you’ll receive responses like this:  
+
+```
+64 bytes from 142.250.64.78: icmp_seq=1 ttl=118 time=15.4 ms
+64 bytes from 142.250.64.78: icmp_seq=2 ttl=118 time=14.9 ms
+```
+- `time=14.9 ms` → Response time in milliseconds (lower is better).  
+
+---
+
+### **1.2 Limiting the Number of Ping Requests**  
+```sh
+ping -c 5 google.com
+```
+- `-c 5` → Send **only 5 packets** instead of running indefinitely.  
+
+---
+
+### **1.3 Checking if a Host is Down**  
+If a server is unreachable, `ping` will return:  
+```
+Request timed out.
+```
+- This could indicate **network issues, firewall restrictions, or server downtime**.  
+
+---
+
+## **2. Downloading Files (`wget`, `curl`)**  
+
+### **2.1 Downloading a File with `wget`**  
+`wget` fetches files from the internet.  
+```sh
+wget https://example.com/file.zip
+```
+- Downloads `file.zip` from the given URL.  
+
+---
+
+### **2.2 Downloading a File with `curl`**  
+`curl` is another tool for downloading files.  
+```sh
+curl -O https://example.com/file.zip
+```
+- The `-O` flag saves the file with its original name.  
+
+---
+
+### **2.3 Resuming Interrupted Downloads**  
+If a download stops midway, resume it with:  
+```sh
+wget -c https://example.com/file.zip
+```
+- `-c` → **Continue** downloading from where it left off.  
+
+---
+
+### **2.4 Downloading Files in the Background**  
+```sh
+wget -b https://example.com/largefile.zip
+```
+- Runs the download in the **background**.  
+- Check progress using:  
+  ```sh
+  tail -f wget-log
+  ```
+
+---
+
+## **3. Checking Open Ports (`netstat`, `ss`)**  
+
+### **3.1 Using `netstat` to List Open Ports**  
+```sh
+netstat -tulnp
+```
+- `-t` → Show **TCP** connections.  
+- `-u` → Show **UDP** connections.  
+- `-l` → Show **listening** ports.  
+- `-n` → Display **numeric** addresses instead of hostnames.  
+- `-p` → Show the **process ID (PID)** of services using the ports.  
+
+#### **Example Output:**  
+```
+Proto Recv-Q Send-Q Local Address  Foreign Address  State   PID/Program name
+tcp   0      0     0.0.0.0:22      0.0.0.0:*        LISTEN  1234/sshd
+tcp   0      0     127.0.0.1:3306  0.0.0.0:*        LISTEN  5678/mysqld
+```
+- **Port 22** → **SSH** is active.  
+- **Port 3306** → **MySQL database** is running.  
+
+---
+
+### **3.2 Using `ss` (Faster Alternative to `netstat`)**  
+```sh
+ss -tulnp
+```
+- Works the same way as `netstat`, but **faster and more efficient**.  
+
+---
+
+### **3.3 Checking If a Specific Port is Open**  
+```sh
+netstat -an | grep :8080
+```
+- Finds if **port 8080** is open.  
+
+```sh
+ss -an | grep :80
+```
+- Checks if **port 80** (HTTP) is listening.  
+
+---
+
+## **4. Checking Network Interface Details (`ip`, `ifconfig`)**  
+
+### **4.1 Checking All Network Interfaces**  
+#### **Using `ip a` (Modern Command)**  
+```sh
+ip a
+```
+- Shows **IP addresses**, **network interfaces**, and **status**.  
+
+#### **Example Output:**  
+```
+1: lo: <LOOPBACK> mtu 65536
+    inet 127.0.0.1/8 scope host lo
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500
+    inet 192.168.1.100/24 brd 192.168.1.255 scope global eth0
+```
+- `eth0` → **Active** network interface.  
+- `inet 192.168.1.100/24` → **Assigned IP address**.  
+
+---
+
+### **4.2 Checking Network Interfaces with `ifconfig` (Older Command)**  
+```sh
+ifconfig
+```
+- Similar to `ip a`, but **deprecated** on some modern systems.  
+
+---
+
+### **4.3 Checking Only IP Addresses**  
+```sh
+hostname -I
+```
+- Prints only the **assigned IP addresses**.  
+
+---
+
+### **4.4 Bringing an Interface Up or Down**  
+To disable an interface:  
+```sh
+ip link set eth0 down
+```
+To re-enable it:  
+```sh
+ip link set eth0 up
+```
+
+---
+---
+---
+
+# **CLI Bootcamp - User & System Management**  
+---
+# **3.3 User & System Management**  
+
+## **1. Managing Users**  
+
+### **1.1 Checking Logged-In Users**  
+#### **Who Am I? (`whoami`)**  
+```sh
+whoami
+```
+- Displays the **current logged-in user**.  
+
+#### **List All Logged-In Users (`who`, `w`)**  
+```sh
+who
+```
+- Shows **who is currently logged into the system**.  
+
+```sh
+w
+```
+- Displays **logged-in users along with activity details**.  
+
+#### **Example Output:**  
+```
+USER     TTY      FROM          LOGIN@   IDLE   JCPU   PCPU WHAT
+john     pts/1    192.168.1.5   08:30    1:23   0.12s  0.12s bash
+```
+- Shows `john` is logged in from `192.168.1.5` using a **bash shell**.  
+
+---
+
+### **1.2 Checking User & Group Information**  
+#### **Get User ID (`id`)**  
+```sh
+id
+```
+- Displays **User ID (UID), Group ID (GID), and groups** the user belongs to.  
+
+#### **Check a User’s Groups**  
+```sh
+groups username
+```
+- Lists all groups the specified user is a member of.  
+
+---
+
+## **2. Switching Users**  
+
+### **2.1 Switching to Another User (`su`)**  
+```sh
+su username
+```
+- Switches to another user **without logging out**.  
+
+```sh
+su -
+```
+- Switches to the **root user** with their environment settings.  
+
+### **2.2 Running a Command as Another User (`sudo`)**  
+```sh
+sudo command
+```
+- Executes a command with **root privileges**.  
+
+```sh
+sudo ls /root
+```
+- Lists files in the root user’s home directory.  
+
+---
+
+## **3. Creating & Deleting Users**  
+
+### **3.1 Creating a New User (`useradd`)**  
+```sh
+sudo useradd -m newuser
+```
+- Creates a new user **with a home directory** (`-m` flag).  
+
+#### **Set Password for New User**  
+```sh
+sudo passwd newuser
+```
+- Assigns a password for the new user.  
+
+---
+
+### **3.2 Deleting a User (`userdel`)**  
+```sh
+sudo userdel -r newuser
+```
+- Deletes the user and removes their **home directory** (`-r` flag).  
+
+---
+
+## **4. Rebooting & Shutting Down the System**  
+
+### **4.1 Shutting Down the System (`shutdown`)**  
+```sh
+sudo shutdown -h now
+```
+- Immediately shuts down the system (`-h` → Halt).  
+
+```sh
+sudo shutdown -h +10
+```
+- Shuts down the system **in 10 minutes**.  
+
+```sh
+sudo shutdown -c
+```
+- Cancels a scheduled shutdown.  
+
+---
+
+### **4.2 Rebooting the System (`reboot`)**  
+```sh
+sudo reboot
+```
+- Immediately **restarts** the system.  
+
+```sh
+sudo shutdown -r now
+```
+- Another way to **restart** the system.  
+
+---
+---
+---

@@ -36,17 +36,6 @@
 - What is the result of `let x = 0; x += "5";`?
 - Can you chain multiple assignment operators in JavaScript?
 
-## 5️⃣ Bitwise Operators
-- What does the `&` (AND) bitwise operator do in JavaScript?
-- What is the difference between `>>` and `>>>`?
-- How does `|` (bitwise OR) work in JavaScript?
-- How can you use the `^` (XOR) operator to swap two variables?
-- What does `~x` return when `x = 5`?
-- How do you check if a number is even using bitwise operators?
-- What is the result of `5 & 3` in binary?
-- How can the `<<` (left shift) operator be used for multiplication?
-- Why is `-1 >>> 1` not negative in JavaScript?
-- How does JavaScript handle bitwise operations on floating-point numbers?
 
 ## 6️⃣ Unary Operators
 - What is the difference between `typeof null` and `typeof undefined`?
